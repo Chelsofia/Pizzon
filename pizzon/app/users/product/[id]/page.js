@@ -1,3 +1,4 @@
+import AddToCartBtn from "../../../components/addToCart";
 
 import { FaShoppingCart } from "react-icons/fa";
 
@@ -103,6 +104,8 @@ export default async function Details({ params }) {
       <br></br>
       <br></br>
       <br></br>
+
+      <AddToCartBtn pizza={pizza} />
     </main>
   );
 
