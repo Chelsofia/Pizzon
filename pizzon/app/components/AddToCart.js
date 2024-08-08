@@ -1,5 +1,5 @@
 "use client";
-
+import { FaShoppingCart } from "react-icons/fa";
 import { useContext } from "react";
 import { cartContext } from "../../cartContext";
 
@@ -8,12 +8,13 @@ export default function AddToCartBtn({ pizza }) {
   console.log({ pizza, data });
   return (
     <button
-      className="bg-blue-500 py-4 px-10 rounded"
+      className="cursor-pointer bg-[#FBB200] px-8 py-3 text-lg md:text-xl rounded-full flex font-medium text-white tracking-wider gap-4"
       onClick={() => {
         setData((prev) => [...prev, pizza]);
       }}
     >
-      Add to cart
+      <FaShoppingCart className="" />
+      ADD TO CART
     </button>
   );
 }

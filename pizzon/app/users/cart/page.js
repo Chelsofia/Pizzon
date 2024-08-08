@@ -29,7 +29,7 @@ export default function Details() {
 
                 <tr>
                   <td className="border-b p-3 whitespace-nowrap align-top">
-                    image
+                    <img src={data.img} alt="image" className="w-20 h-20" />
                   </td>
                 </tr>
                 <tr>

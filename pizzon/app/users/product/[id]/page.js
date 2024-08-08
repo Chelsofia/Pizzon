@@ -1,6 +1,4 @@
-import AddToCartBtn from "../../../components/addToCart";
-
-import { FaShoppingCart } from "react-icons/fa";
+import AddToCartBtn from "../../../components/AddToCart";
 
 async function collectPizza(pizza_id) {
   const res = await fetch(
@@ -91,10 +89,7 @@ export default async function Details({ params }) {
 
             <br></br>
             <>
-              <button className="cursor-pointer bg-[#FBB200] px-8 py-3 text-lg md:text-xl rounded-full flex font-medium text-white tracking-wider gap-4">
-                <FaShoppingCart className="" />
-                ADD TO CART
-              </button>
+              <AddToCartBtn pizza={pizza} />
             </>
           </div>
         </div>
@@ -104,9 +99,6 @@ export default async function Details({ params }) {
       <br></br>
       <br></br>
       <br></br>
-
-      <AddToCartBtn pizza={pizza} />
     </main>
   );
-
 }
