@@ -2,75 +2,119 @@
 
 import { useContext } from "react";
 import { cartContext } from "../../../cartContext";
+import { useState } from "react";
+import Modal from "../cart/cartModal";
 
 export default function Details() {
+  const { data: cartData, setData } = useContext(cartContext);
 
-    const { data: cartData } = useContext(cartContext);
-    
+  const handleDelete = (index) => {
+    setData((prevData) => prevData.filter((_, i) => i !== index));
+  };
+
+  // Compute totals
+  const subtotal = (cartData || []).reduce(
+    (total, item) => total + item.prices[0],
+    0
+  );
+  const discount = 0; 
+  const total = subtotal - discount;
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   return (
-    <main className="flex flex-col md:flex-row items-start mx-auto p-4 my-20 gap-4">
+    <main className="flex flex-col md:flex-row items-start mx-auto p-4 my-10 gap-4">
+      {/* Cart Items Section */}
       <div className="md:w-2/3 w-full mb-4 md:mb-0">
-        <div className="overflow-auto px-5">
-          {cartData.map((data) => (
-            <table className="w-[100%] table-auto border-collapse border-b border-gray-300">
-              <thead>
-                <tr>
-                  <th className="border-b text-left p-3">Product</th>
-                  <th className="border-b text-left p-3">Name</th>
-                  <th className="border-b text-left p-3">Extras</th>
-                  <th className="border-b text-left p-3">Price</th>
-                  <th className="border-b text-left p-3">Quantity</th>
-                  <th className="border-b text-left p-3">Total</th>
-                </tr>
-              </thead>
-              <tbody>
-                {/* <tr className="flex-col justify-start items-start"></tr> */}
-
-                <tr>
-                  <td className="border-b p-3 whitespace-nowrap align-top">
-                    <img src={data.img} alt="image" className="w-20 h-20" />
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b p-3 whitespace-nowrap align-top">
-                    {data.title}
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b p-3 whitespace-nowrap align-top">
-                    John Street
-                  </td>
-                </tr>
-                <tr>
-                  <td className="border-b p-3 whitespace-nowrap align-top"></td>
-                  <td className="border-b p-3 whitespace-nowrap align-top">
-                    Quantity: 1
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-          ))}
+        <div className="overflow-x-auto px-2">
+          {cartData && cartData.length > 0 ? (
+            cartData.map((data, index) => (
+              <div key={data.id || index} className="mb-6">
+                <table className="w-full table-auto border-collapse border-gray-300">
+                  <thead>
+                    <tr className="hidden md:table-row">
+                      <th className="border-b text-left p-2 sm:p-3">Product</th>
+                      <th className="border-b text-left p-2 sm:p-3">Name</th>
+                      <th className="border-b text-left p-2 sm:p-3">Extras</th>
+                      <th className="border-b text-left p-2 sm:p-3">Price</th>
+                      <th className="border-b text-left p-2 sm:p-3">
+                        Quantity
+                      </th>
+                      <th className="border-b text-left p-2 sm:p-3">Total</th>
+                      <th className="border-b text-left p-2 sm:p-3">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="table-row">
+                      <td className="border-b p-2 sm:p-3">
+                        <img
+                          src={data.img}
+                          alt="Product Image"
+                          className="w-16 h-16 md:w-20 md:h-20 object-cover"
+                        />
+                      </td>
+                      <td className="border-b p-2 sm:p-3">{data.title}</td>
+                      <td className="border-b p-2 sm:p-3">
+                        {data.extras ? data.extras.join(", ") : "None"}
+                      </td>
+                      <td className="border-b p-2 sm:p-3">${data.prices[0]}</td>
+                      <td className="border-b p-2 sm:p-3">1</td>{" "}
+                      {/* Example static quantity */}
+                      <td className="border-b p-2 sm:p-3">
+                        ${data.prices[0]}
+                      </td>{" "}
+                      {/* Example static total */}
+                      <td className="border-b p-2 sm:p-3">
+                        <button
+                          onClick={() => handleDelete(index)}
+                          className="bg-red-500 text-white px-3 py-1 rounded-md hover:bg-red-600"
+                        >
+                          Delete
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            ))
+          ) : (
+            <p className="text-center text-gray-500">No items in cart</p>
+          )}
         </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-10 mt-10 w-full"></div>
       </div>
-      <div className=" md:w-[50%] bg-[#333333] text-white px-10 py-8">
-        <h1 className="text-xl font-bold tracking-wider mb-5">CART TOTAL</h1>
+
+      {/* Cart Total Section */}
+      <div className="md:w-1/3 w-full bg-[#333333] text-white px-4 py-6 md:px-6 md:py-8">
+        <h1 className="text-xl font-bold tracking-wider mb-4">CART TOTAL</h1>
         <p className="font-bold">
-          "Subtotal:" <span className="font-medium ml-5"> $150</span>{" "}
+          Subtotal:{" "}
+          <span className="font-medium ml-2">${subtotal.toFixed(2)}</span>
         </p>
         <p className="font-bold">
-          "Discount:" <span className="font-medium ml-5"> $150</span>{" "}
+          Discount:{" "}
+          <span className="font-medium ml-2">${discount.toFixed(2)}</span>
         </p>
         <p className="font-bold">
-          "Total:" <span className="font-medium ml-5"> $150</span>{" "}
+          Total: <span className="font-medium ml-2">${total.toFixed(2)}</span>
         </p>
-        <div className="flex-col w-full">
-          <button className="cursor-pointer bg-[#FBB200] w-full py-2 text-lg rounded-full flex font-semibold text-white tracking-wider align-middle justify-center">
-            PAID
+        <div className="flex justify-center mt-4">
+          <button
+            onClick={openModal}
+            className="cursor-pointer bg-[#FBB200] w-full py-2 text-lg rounded-full font-semibold text-white tracking-wider"
+          >
+            cash on delivery
+          </button>
+        </div>
+        <div className="flex justify-center mt-4">
+          <button className="cursor-pointer bg-[#FBB200] w-full py-2 text-lg rounded-full font-semibold text-white tracking-wider">
+            Paypal
           </button>
         </div>
       </div>
+      <Modal isOpen={isModalOpen} onClose={closeModal} />
     </main>
   );
 }

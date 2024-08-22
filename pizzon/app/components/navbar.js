@@ -1,35 +1,50 @@
 "use client";
+
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { FaSearch, FaShoppingCart } from "react-icons/fa";
-// import { SearchBar } from "./searchBar";
+import SearchModal from "./searchModal";
 
 const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
 
   const pathname = usePathname();
+
+  const handleMobileLinkClick = () => {
+    setIsMobileMenuOpen(false);
+  };
+
+  const linkClassName = (path) =>
+    `text-black hover:bg-amber-200 hover:text-black rounded-md px-3 py-2 ${
+      pathname === path ? "bg-amber-500" : ""
+    }`;
+
   return (
-    <nav className=" sticky top-0 shadow-md bg-white z-50">
+    <nav className="sticky top-0 shadow-md bg-white z-50">
       <div className="mx-auto flex items-center justify-between">
         <div className="absolute top-[-30px] md:top-[-30px] left-60">
           <img src="/images/pizza-header.png" className="w-60 h-90" />
         </div>
         <Link href="/">
           <div className="flex items-center space-x-2 cursor-pointer">
-            <img src="/images/pizza-logo.png" className="h-50 w-20 pt-45"></img>
+            <img src="/images/pizza-logo.png" className="h-50 w-20 pt-45" />
           </div>
         </Link>
 
-        <div className=" md:flex items-center justify-center space-x-8">
+        <div className="md:flex items-center justify-center space-x-8">
           <div className="absolute sticky right-20 flex items-center lg:hidden md:hidden">
-            {/* <!-- Mobile menu button-> */}
+            {/* Mobile menu button */}
             <button
               type="button"
               id="mobile-dropdown-button"
               className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
               aria-controls="mobile-menu"
-              aria-expanded="false"
+              aria-expanded={isMobileMenuOpen}
               onClick={() => setIsMobileMenuOpen((prev) => !prev)}
             >
               <span className="absolute -inset-0.5"></span>
@@ -52,58 +67,37 @@ const Navbar = () => {
           </div>
           <ul className="hidden md:flex gap-[3vw] text-bold">
             <li>
-              <Link
-                href="/"
-                className={`${
-                  pathname === "/" ? "bg-amber-500" : ""
-                } text-black hover:bg-amber-200 hover:text-black rounded-md px-3 py-2`}
-              >
+              <Link href="/" className={linkClassName("/")}>
                 HOME
               </Link>
             </li>
             <li>
-              <Link
-                href="/users"
-                className={`${
-                  pathname === "/users" ? "bg-amber-500" : ""
-                } text-black hover:bg-amber-200 hover:text-black rounded-md px-3 py-2`}
-              >
+              <Link href="/users" className={linkClassName("/users")}>
                 PRODUCTS
               </Link>
             </li>
             <li>
-              <Link
-                href=""
-                className={`${
-                  pathname === "/" ? "bg-amber-500" : ""
-                } text-black hover:bg-amber-200 hover:text-black rounded-md px-3 py-2`}
-              >
+              <Link href="/pages" className={linkClassName("/pages")}>
                 PAGES
               </Link>
             </li>
             <li>
-              <Link
-                href="/users/product"
-                className={`${
-                  pathname === "/" ? "bg-amber-500" : ""
-                } text-black hover:bg-amber-200 hover:text-black rounded-md px-3 py-2`}
-              >
+              <Link href="/blog" className={linkClassName("/blog")}>
                 BLOG
               </Link>
             </li>
             <li>
-              <Link
-                href=""
-                className={`${
-                  pathname === "/" ? "bg-amber-500" : ""
-                } text-black hover:bg-amber-200 hover:text-black rounded-md px-3 py-2`}
-              >
+              <Link href="/contact" className={linkClassName("/contact")}>
                 CONTACT
               </Link>
             </li>
           </ul>
           <div className="flex items-center gap-4">
-            <FaSearch className="text-blue-500" size={20} />
+            <FaSearch
+              onClick={openModal}
+              className="text-blue-500 cursor-pointer"
+              size={20}
+            />
             <Link href="/users/cart/">
               <FaShoppingCart
                 className="text-blue-500 cursor-pointer"
@@ -114,42 +108,52 @@ const Navbar = () => {
         </div>
       </div>
       {isMobileMenuOpen && (
-        <div id="mobile-menu">
+        <div
+          id="mobile-menu"
+          className="absolute top-full left-0 w-full bg-white shadow-md"
+        >
           <div className="space-y-1 px-2 pb-3 pt-2">
             <Link
               href="/"
-              className="bg-black text-white block rounded-md px-3 py-2 text-base font-medium"
+              className="block rounded-md px-3 py-2 text-base font-medium"
+              onClick={handleMobileLinkClick}
             >
               Home
             </Link>
             <Link
               href="/users"
-              className="text-black block rounded-md px-3 py-2 text-base font-medium"
+              className="block rounded-md px-3 py-2 text-base font-medium"
+              onClick={handleMobileLinkClick}
             >
               Products
             </Link>
             <Link
-              href="/"
-              className="text-black block rounded-md px-3 py-2 text-base font-medium"
+              href="/pages"
+              className="block rounded-md px-3 py-2 text-base font-medium"
+              onClick={handleMobileLinkClick}
             >
               Pages
             </Link>
             <Link
-              href="/"
-              className="text-black block rounded-md px-3 py-2 text-base font-medium"
+              href="/blog"
+              className="block rounded-md px-3 py-2 text-base font-medium"
+              onClick={handleMobileLinkClick}
             >
               Blog
             </Link>
             <Link
-              href="/"
-              className="text-black block rounded-md px-3 py-2 text-base font-medium"
+              href="/contact"
+              className="block rounded-md px-3 py-2 text-base font-medium"
+              onClick={handleMobileLinkClick}
             >
               Contact
             </Link>
           </div>
         </div>
       )}
+      {isModalOpen && <SearchModal onClose={closeModal} />}
     </nav>
   );
 };
+
 export default Navbar;

@@ -1,12 +1,12 @@
-"use client"
-import { createContext, useContext, useState } from "react";
-import { productsArray, getProductData } from "./app/components/pizzaData";
-
+"use client";
+import { createContext, useContext, useState, useEffect } from "react";
 
 export const cartContext = createContext();
 
 export function AppProvider({ children }) {
-  const [data, setData] = useState([]);
+  
+  const [data, setData] = useState([]) 
+
 
   return (
     <cartContext.Provider value={{ data, setData }}>

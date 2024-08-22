@@ -2,12 +2,7 @@ import AddToCartBtn from "../../../components/AddToCart";
 
 async function collectPizza(pizza_id) {
   const res = await fetch(
-    `https://pizza-ordering-anno.onrender.com/api/products/${pizza_id}`,
-    {
-      next: {
-        revalidate: 60,
-      },
-    }
+    `https://pizza-ordering-anno.onrender.com/api/products/${pizza_id}`
   );
   return res.json();
 }
@@ -15,90 +10,97 @@ async function collectPizza(pizza_id) {
 export default async function Details({ params }) {
   const pizza = await collectPizza(params.id);
 
-  // if (!pizza) {
-  //   return (
-  //     <>
-  //       <main>
-  //         <Navbar />
-
-  //         <div>
-  //           <article>
-  //             <p>Pizza not found</p>
-  //           </article>
-  //         </div>
-  //       </main>
-  //     </>
-  //   );
-  // }
+  if (!pizza) {
+    return (
+      <main>
+        <div className="text-center p-10">
+          <p>Pizza not found</p>
+        </div>
+      </main>
+    );
+  }
 
   return (
     <main>
-      <div className="flex flex-col md:flex-row md:h-screen mx-auto relative p-4">
-        <img src={pizza?.img} alt="image" className=" justify-center" />
-        <div className=" flex flex-col md:w-1/2 p-4">
-          <h1 className="text-4xl text-[#111111] font-bold tracking-wider mb-5">
+      <div className="flex flex-col md:flex-row md:h-auto mx-auto p-4 gap-6">
+        <div className="w-full md:w-1/2 flex justify-center">
+          <img
+            src={pizza?.img}
+            alt={pizza?.title}
+            className="object-cover w-full h-auto max-w-md rounded-lg"
+          />
+        </div>
+
+        <div className="w-full md:w-1/2 flex flex-col p-4">
+          <h1 className="text-3xl md:text-4xl text-[#111111] font-bold tracking-wider mb-5">
             {pizza?.title}
           </h1>
 
           <h1 className="text-xl text-[#DC3545] font-bold tracking-wide mb-5">
-            ${pizza.prices.slice(0, 1)}
+            ${pizza.prices[0]}
             <span className="text-[#999999] ml-5">8 Reviews</span>
           </h1>
-          <p className="text-lg tracking-wider text-[#555555] mb-5">
-            This is {pizza?.title}
+
+          <p className="text-md md:text-lg tracking-wider text-[#555555] mb-5">
+            {pizza?.desc}
           </p>
-          <p className="text-lg tracking-wider text-[#555555] mb-5">
-            Category: {pizza?.desc}
-          </p>
-          <p className="text-lg tracking-wider text-[#555555] mb-10">
-            Tags: Healthy, Organic, Chicken, Sauce
-          </p>
-          <h1 className="text-xl text-[#111111] font-bold tracking-wider mb-5">
+
+          <h1 className="text-lg md:text-xl text-[#111111] font-bold tracking-wider mb-5">
             Choose Pizza Size
           </h1>
-          <div className="mb-0 flex gap-10 align-middle items-center">
-            <div className="relative cursor-pointer h-12 w-10">
-              <img src="/images/pizza-icon.png"></img>
-              <div className="absolute bg-[#e6230d] text-white text-sm top-[-10px] right-[-90%] rounded-full p-1 pb-0 ">
-                <span className="text-white text -[12px]">Small</span>
-              </div>
-            </div>
-            <div className="relative cursor-pointer h-16 w-14">
-              <img src="/images/pizza-icon.png"></img>
-              <div className="absolute bg-[#e6230d] text-white text-sm top-[-10px] right-[-80%] rounded-full  p-1 pb-0">
-                <span className="text-white">Medium</span>
-              </div>
-            </div>
-            <div className="relative cursor-pointer h-20 w-20">
-              <img src="/images/pizza-icon.png"></img>
-              <div className="absolute bg-[#e6230d] text-white text-sm top-[-10px] right-[-30%] rounded-full  p-1 pb-0">
-                <span className="text-white">Large</span>
-              </div>
-            </div>
-          </div>
-          <div className="pt-8 xl:pt-12">
-            <p>Choose additional ingredients</p>
-            <input type="checkbox" />
-            <span>Sauce</span>
-          </div>
-          <div>
-            <input
-              type="number"
-              className="w-1/2 md:w-1/2 h-5 border-2 rounded-sm py-4 px-2 mb-3 outline-none"
-            />
 
-            <br></br>
-            <>
-              <AddToCartBtn pizza={pizza} />
-            </>
+          <div className="mb-6 flex gap-4 items-center">
+            <div className="relative cursor-pointer h-12 w-10 md:w-12">
+              <img
+                src="/images/pizza-icon.png"
+                className="h-full w-full"
+                alt="Small Pizza"
+              />
+              <div className="absolute bg-[#e6230d] text-white text-xs top-[-10px] right-[-30%] rounded-full p-1">
+                Small
+              </div>
+            </div>
+
+            <div className="relative cursor-pointer h-16 w-14 md:w-16">
+              <img
+                src="/images/pizza-icon.png"
+                className="h-full w-full"
+                alt="Medium Pizza"
+              />
+              <div className="absolute bg-[#e6230d] text-white text-xs top-[-10px] right-[-30%] rounded-full p-1">
+                Medium
+              </div>
+            </div>
+
+            <div className="relative cursor-pointer h-20 w-20 md:w-24">
+              <img
+                src="/images/pizza-icon.png"
+                className="h-full w-full"
+                alt="Large Pizza"
+              />
+              <div className="absolute bg-[#e6230d] text-white text-xs top-[-10px] right-[-20%] rounded-full p-1">
+                Large
+              </div>
+            </div>
           </div>
+
+          <div className="flex flex-col gap-2 mb-6">
+            <p className="text-sm md:text-md">Choose additional ingredients</p>
+            <label className="flex items-center gap-2">
+              <input type="checkbox" />
+              <span className="text-sm md:text-md">Sauce</span>
+            </label>
+          </div>
+
+          <input
+            type="number"
+            className="w-full md:w-1/3 h-10 border-2 rounded-md py-2 px-3 mb-4 outline-none"
+            placeholder="Quantity"
+          />
+
+          <AddToCartBtn pizza={pizza} />
         </div>
       </div>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
-      <br></br>
     </main>
   );
 }
